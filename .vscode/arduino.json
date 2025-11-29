@@ -2,6 +2,6 @@
     "configuration": "cpu=atmega328old",
     "board": "arduino:avr:nano",
     "programmer": "avrisp",
-    "port": "COM17",
-    "sketch": "1_Master_sent.ino"
+    "port": "COM14",
+    "sketch": "Tests_sketches\\Fuji_AC_Frame_Emulator\\Fuji_AC_Frame_Emulator.ino"
 }

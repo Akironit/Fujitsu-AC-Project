@@ -1,5 +1,8 @@
 #include <avr/io.h>   // регистры UART0
 
+uint32_t lastChange = 0;
+uint8_t temp = 16; // начальная температура
+
 // --------- отправка одного байта 500 бод 8E1 ---------
 void uart0SendByte(uint8_t b) {
   while (!(UCSR0A & (1 << UDRE0)));
@@ -21,14 +24,24 @@ void setup() {
 
   uart0Init();             // UART0 = 500 бод, **вывод на D1**
   
-  // инвертируем для LIN
-  for (byte &b : frame) b ^= 0xFF;
 }
 
 void loop() {
 
+  if (millis() - lastChange > 3000) {
+    lastChange = millis();
+    temp = (temp >= 30) ? 16 : temp + 1; // 16→30 и обратно
+    frame[3] = (temp << 0); // температура в битах. пишем просто в байт
+  }
+
+  // инвертируем для LIN
+  for (byte &b : frame) b ^= 0xFF;
+
   // шлём кадр **только в UART0** (D1)
   for (byte b : frame) uart0SendByte(b);
+
+  // вернем как было
+  for (byte &b : frame) b ^= 0xFF;
 
   delay(1000);
 }

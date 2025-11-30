@@ -1,4 +1,4 @@
-#include <avr/io.h>   // регистры UART0
+#include <avr/io.h>
 
 uint32_t lastChange = 0;
 uint8_t temp = 16; // начальная температура
@@ -31,7 +31,7 @@ void loop() {
   if (millis() - lastChange > 3000) {
     lastChange = millis();
     temp = (temp >= 30) ? 16 : temp + 1; // 16→30 и обратно
-    frame[3] = (temp << 0); // температура в битах. пишем просто в байт
+    frame[4] = (temp << 0); // температура в битах. пишем просто в байт
   }
 
   // инвертируем для LIN

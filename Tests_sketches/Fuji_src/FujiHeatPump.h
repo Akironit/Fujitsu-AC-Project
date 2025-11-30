@@ -86,20 +86,28 @@ class FujiHeatPump
     FujiFrame       updateState;      // Что мы ХОТИМ изменить
     FujiFrame       currentState;     // Копия последнего кадра (текущее состояние)
 
-    FujiFrame decodeFrame();                    // работает с сырыми 8 байтами
-    void encodeFrame(FujiFrame ff);             // Обратно: структура → сырые 8 байт writeBuf
-    void printFrame(byte buf[8], FujiFrame ff); // Красивый вывод в Serial (для отладки)
+    // FujiFrame decodeFrame();                    // работает с сырыми 8 байтами
+    // void encodeFrame(FujiFrame ff);             // Обратно: структура → сырые 8 байт writeBuf
+    // void printFrame(byte buf[8], FujiFrame ff); // Красивый вывод в Serial (для отладки)
     
     bool pendingFrame = false;  // true = в writeBuf лежит готовый кадр, надо отправить
   
   public:
+
+    FujiFrame decodeFrame();                    
+    void encodeFrame(FujiFrame ff);             
+    void printFrame(byte buf[8], FujiFrame ff); 
+
     void connect(Stream *serial, bool secondary);   // Подключаемся к любому Serial (Serial1, Serial2, …) и выбираем роль (true = вторичный)
     void connect(Stream *serial, bool secondary, int rxPin, int txPin); // переназначаем пины (только ESP32)
+    void connect(bool secondary); // инициализация без Serial
 
     bool waitForFrame();          // Дождаться кадра, вернуть true если пришёл
     void sendPendingFrame();      // Отправить подготовленный кадр
     bool isBound();               // true = мы в сети (приходили кадры < 1 с)
     bool updatePending();         // true = есть изменения, которые ещё не ушли
+
+    void setReadBuf(const byte* newReadBuf);
 
     void setOnOff(bool o);        // Записать новые значения, будут отправлены со следующим кадром
     void setTemp(byte t);         

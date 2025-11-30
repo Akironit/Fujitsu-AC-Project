@@ -1,7 +1,6 @@
 #include "FujiHeatPump.h"
 
 
-
 FujiFrame FujiHeatPump::decodeFrame() {
     FujiFrame ff;
 
@@ -90,7 +89,7 @@ void FujiHeatPump::connect(Stream *serial, bool secondary, int rxPin=-1, int txP
 //     _serial->setTimeout(200);
 
     // КРИТИЧЕСКИ ВАЖНО: инициализация для Arduino Nano
-    #if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega328__)
+    #if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega328__) || defined(ARDUINO_AVR_NANO)
         // Прямая установка регистров UART0 для 500 бод, 8E1
         UBRR0H = 0x07; // Высокий байт делителя (1999 >> 8)
         UBRR0L = 0xCF; // Низкий байт делителя (1999 & 0xFF)
@@ -104,6 +103,10 @@ void FujiHeatPump::connect(Stream *serial, bool secondary, int rxPin=-1, int txP
     
     _serial->setTimeout(200);
     
+    return this->connect(secondary);
+}
+
+void FujiHeatPump::connect(bool secondary) {
     if(secondary) {
         controllerIsPrimary = false;
         controllerAddress = static_cast<byte>(FujiAddress::SECONDARY);
@@ -331,6 +334,10 @@ bool FujiHeatPump::updatePending() {
         return true;
     }
     return false;
+}
+
+void FujiHeatPump::setReadBuf(const byte* externalBuf) {
+    memcpy(readBuf, externalBuf, 8);  
 }
 
 void FujiHeatPump::setOnOff(bool o){

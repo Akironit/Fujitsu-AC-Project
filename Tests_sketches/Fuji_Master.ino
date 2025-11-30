@@ -1,4 +1,4 @@
-#include <Wire.h>
+#include <Wire.h>         // мастер
 
 constexpr uint8_t SLAVE_ADDR = 0x42;
 constexpr uint8_t FRAME_LEN  = 8;
@@ -7,16 +7,14 @@ uint8_t buf[FRAME_LEN];
 uint8_t fresh;
 
 void setup() {
-  Wire.begin();        // мастер
+  Wire.begin();        
   Serial.begin(115200);
   Serial.println("Master: старт");
 }
 
-void loop() {
-  // запрашиваем 9 байт
+void frameRequest() {
   Wire.requestFrom(SLAVE_ADDR, uint8_t(FRAME_LEN + 1));
   if (Wire.available() == 9) {
-    //Serial.println("Есть ответ на 9 байт!");
     for (uint8_t i = 0; i < FRAME_LEN; ++i) buf[i] = Wire.read();
     fresh = Wire.read();
 
@@ -32,6 +30,11 @@ void loop() {
   } else {
     Serial.println("I²C ошибка длины");
   }
+}
+
+void loop() {
+  // запрашиваем 9 байт
+  frameRequest();
 
   delay(300);   // опрос
 }

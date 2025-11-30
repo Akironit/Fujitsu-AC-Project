@@ -3,5 +3,5 @@
     "board": "arduino:avr:nano",
     "programmer": "avrisp",
     "port": "COM14",
-    "sketch": "Tests_sketches\\Fuji_AC_Frame_Emulator\\Fuji_AC_Frame_Emulator.ino"
+    "sketch": "Tests_sketches\\Fuji_Master.ino"
 }
